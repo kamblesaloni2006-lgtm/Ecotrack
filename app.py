@@ -1,110 +1,120 @@
 
 from flask import Flask, request, redirect, render_template_string
+import sqlite3
 
 app = Flask(__name__)
-reports = []
+DATABASE = "ecotrack.db"
 
-HTML = """
-<!DOCTYPE html>
-<html>
-<head>
-    <title>EcoTrack - Waste Reporting</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f0f7f2;
-            margin: 0;
-            padding: 25px;
-            color: #24372b;
-        }
-        main {
-            max-width: 800px;
-            margin: auto;
-        }
-        .card {
-            background: white;
-            padding: 22px;
-            margin: 18px 0;
-            border-radius: 14px;
-            box-shadow: 0 3px 12px #00000010;
-        }
-        input, select, textarea, button {
-            box-sizing: border-box;
-            width: 100%;
-            padding: 12px;
-            margin: 7px 0;
-            border: 1px solid #ccd9ce;
-            border-radius: 7px;
-        }
-        button {
-            background: #21834b;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        h1 { color: #176638; }
-        .status { color: #21834b; font-weight: bold; }
-    </style>
-</head>
-<body>
-<main>
-    <h1>🌱 EcoTrack</h1>
-    <p>Report waste. Improve our environment.</p>
 
-    <section class="card">
-        <h2>Report a Waste Problem</h2>
-        <form method="POST" action="/report">
+def init_db():
+    with sqlite3.connect(DATABASE) as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS reports (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                location TEXT NOT NULL,
+                waste_type TEXT NOT NULL,
+                description TEXT NOT NULL,
+                status TEXT DEFAULT 'Reported'
+            )
+        """)
+
+
+@app.route("/")
+def home():
+    with sqlite3.connect(DATABASE) as conn:
+        reports = conn.execute(
+            "SELECT id, location, waste_type, description, status "
+            "FROM reports ORDER BY id DESC"
+        ).fetchall()
+
+    return render_template_string("""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>EcoTrack</title>
+        <style>
+            body {
+                font-family: Arial;
+                max-width: 850px;
+                margin: 35px auto;
+                padding: 20px;
+                background: #f0f7f2;
+            }
+            h1 { color: #176b45; }
+            input, textarea, button {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                margin: 10px 0;
+                padding: 12px;
+            }
+            button {
+                background: #176b45;
+                color: white;
+                border: 0;
+                cursor: pointer;
+            }
+            .report {
+                background: white;
+                padding: 12px;
+                margin: 12px 0;
+                border-radius: 8px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>🌱 EcoTrack</h1>
+        <p>Report waste problems in your community.</p>
+
+        <form action="/report" method="post">
             <input name="location" placeholder="Location" required>
-            <select name="waste_type" required>
-                <option value="">Select waste type</option>
-                <option>Overflowing bin</option>
-                <option>Plastic waste</option>
-                <option>Food waste</option>
-                <option>Illegal dumping</option>
-                <option>Other</option>
-            </select>
+            <input name="waste_type" placeholder="Waste type" required>
             <textarea name="description"
                 placeholder="Describe the problem" required></textarea>
             <button type="submit">Submit Report</button>
         </form>
-    </section>
 
-    <section class="card">
-        <h2>Waste Reports ({{ reports|length }})</h2>
+        <h2>Submitted Reports</h2>
         {% for r in reports %}
-        <div class="card">
-            <h3>{{ r.waste_type }}</h3>
-            <p><b>Location:</b> {{ r.location }}</p>
-            <p>{{ r.description }}</p>
-            <p class="status">Status: {{ r.status }}</p>
+        <div class="report">
+            <strong>Report #{{ r[0] }} — {{ r[4] }}</strong>
+            <p><b>Location:</b> {{ r[1] }}</p>
+            <p><b>Waste type:</b> {{ r[2] }}</p>
+            <p>{{ r[3] }}</p>
         </div>
         {% else %}
-        <p>No reports yet. Add your first report above!</p>
+        <p>No reports submitted yet.</p>
         {% endfor %}
-    </section>
-</main>
-</body>
-</html>
-"""
+    </body>
+    </html>
+    """, reports=reports)
 
-@app.route("/")
-def home():
-    return render_template_string(HTML, reports=reports)
 
 @app.route("/report", methods=["POST"])
 def report():
-    reports.append({
-        "location": request.form["location"].strip(),
-        "waste_type": request.form["waste_type"],
-        "description": request.form["description"].strip(),
-        "status": "Reported"
-    })
+    location = request.form.get("location", "").strip()
+    waste_type = request.form.get("waste_type", "").strip()
+    description = request.form.get("description", "").strip()
+
+    if not location or not waste_type or not description:
+        return "All fields are required.", 400
+
+    with sqlite3.connect(DATABASE) as conn:
+        conn.execute(
+            "INSERT INTO reports (location, waste_type, description) "
+            "VALUES (?, ?, ?)",
+            (location, waste_type, description)
+        )
+
     return redirect("/")
+
 
 @app.route("/health")
 def health():
-    return {"status": "healthy"}, 200
+    return {"status": "healthy"}
+
+
+init_db()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)
