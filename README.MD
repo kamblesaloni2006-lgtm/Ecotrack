@@ -1,16 +1,16 @@
 ## Project Screenshots
 
 ### 1. GitHub Commit History
-![GitHub Commit History](screenshots/01_GitHub_Commit_History.png)
+![GitHub Commit History](01_GitHub_Commit_History.png)
 
 ### 2. EcoTrack Web Application
-![EcoTrack Web Application](screenshots/02_EcoTrack_App.png)
+![EcoTrack Web Application](02_EcoTrack_App.png)
 
 ### 3. Docker Container Running
 ![Docker Container Running](03_Docker_Running.png)
 
 ### 4. Jenkins CI Pipeline Success
-![Jenkins CI Pipeline Success](screenshots/04_Jenkins_Success.png)
+![Jenkins CI Pipeline Success](04_Jenkins_Success.png)
 
 ## DevOps Integration
 
