@@ -6,7 +6,7 @@
 ### 2. EcoTrack Web Application — Screenshot 1
 ![EcoTrack Web Application Screenshot 1](02_EcoTrack_App%201.1.png)
 
-### 3. EcoTrack Web Application — Screenshot 2
+### EcoTrack Web Application — Screenshot 2
 ![EcoTrack Web Application Screenshot 2](02_EcoTrack_App%201.2.png)
 
 ### 3. Docker Container Running
