@@ -7,7 +7,7 @@
 ![EcoTrack Web Application](screenshots/02_EcoTrack_App.png)
 
 ### 3. Docker Container Running
-![Docker Container Running](screenshots/03_Docker_Running.png)
+![Docker Container Running](03_Docker_Running.png)
 
 ### 4. Jenkins CI Pipeline Success
 ![Jenkins CI Pipeline Success](screenshots/04_Jenkins_Success.png)
