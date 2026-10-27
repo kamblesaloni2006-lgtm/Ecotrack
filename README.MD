@@ -1,45 +1,20 @@
-﻿# EcoTrack - Smart Waste Reporting System
+## Project Screenshots
 
-## Project Overview
-EcoTrack is a Flask-based web application that allows users to report waste by entering a location, waste type, and description.
+### 1. GitHub Commit History
+![GitHub Commit History](screenshots/01_GitHub_Commit_History.png)
 
-## Features
-- Submit waste reports
-- Store reports using SQLite
-- View submitted reports
-- Health-check endpoint
-- Automated application tests
-- Docker containerization
+### 2. EcoTrack Web Application
+![EcoTrack Web Application](screenshots/02_EcoTrack_App.png)
 
-## Technologies Used
-- Python
-- Flask
-- SQLite
-- unittest
-- Docker
+### 3. Docker Container Running
+![Docker Container Running](screenshots/03_Docker_Running.png)
 
-## Run Locally
-1. Install Python.
-2. Install dependencies:
+### 4. Jenkins CI Pipeline Success
+![Jenkins CI Pipeline Success](screenshots/04_Jenkins_Success.png)
 
-   pip install -r requirements.txt
+## DevOps Integration
 
-3. Start the application:
-
-   python -m flask --app app run --debug
-
-4. Open http://127.0.0.1:5000
-
-## Health Check
-Visit http://127.0.0.1:5000/health
-
-## Run Tests
-python -m unittest test_app.py
-
-## Build Docker Image
-docker build -t ecotrack:1.0 .
-
-## Run Docker Container
-docker run -d --name ecotrack-app -p 5000:5000 ecotrack:1.0
-
-Open http://localhost:5000 to access the application.
+- **Git and GitHub:** Version control and project change history.
+- **Docker:** Containerized the EcoTrack Flask application.
+- **Jenkins:** Automated dependency installation and application tests through a CI pipeline.
+- **Automated Testing:** Verified application routes and waste-report submission using Python unit tests.
